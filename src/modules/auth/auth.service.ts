@@ -56,7 +56,7 @@ export class AuthService {
           registration, please click the link below to verify your email address:
         </p>
         <p>
-          <a href="${token}"
+          <a href="http://localhost:4000/token=${token}"
             ><button
               style="
                 padding: 10px;
