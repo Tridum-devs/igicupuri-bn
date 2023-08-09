@@ -3,7 +3,7 @@ type User {
   firstName: String!
   lastName: String!
   email: String!
-  password: String!
+  isVerified: Boolean!
 }
 
 input UserInput {
@@ -13,6 +13,21 @@ input UserInput {
   password: String!
 }
 
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+type LoginResponse {
+  message: String!
+  token: String!
+}
+
+type Query {
+  verifyEmail(token: String!): String!
+}
+
 type Mutation {
   createUser(userInput: UserInput!): User!
+  loginUser(loginInput: LoginInput!): LoginResponse!
 }

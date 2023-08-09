@@ -1,16 +1,14 @@
-import { Injectable, Module } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
+import { Injectable } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthHelper {
-  async hashPassword(password: string): Promise<any> {
-    const salt = await bcrypt.genSalt(10);
-    return await bcrypt.hash(password, salt);
+  constructor(private readonly jwtService: JwtService) {}
+  async generateJwtToken(payload: any): Promise<string> {
+    return await this.jwtService.signAsync(payload);
   }
-  async comparePassword(
-    plainPassword: string,
-    hashedPassword: string,
-  ): Promise<boolean> {
-    return await bcrypt.compare(plainPassword, hashedPassword);
+
+  async verifyJwtToken(token: string): Promise<any> {
+    return await this.jwtService.verifyAsync(token);
   }
 }

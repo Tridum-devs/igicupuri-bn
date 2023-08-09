@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { QueryRepository } from 'src/database/query.repository';
+import { UserInterface } from 'src/interfaces/user.interface';
 import { User, UserInput } from 'src/schema/graphql';
 
 @Injectable()
@@ -12,7 +13,7 @@ export class AuthRepository {
       .initQuery()
       .raw(
         `
-        CREATE (user:User {firstName: "${firstName}", lastName: "${lastName}", email: "${email}", password: "${password}"})
+        CREATE (user:User {firstName: "${firstName}", lastName: "${lastName}", email: "${email}", password: "${password}", isVerified: false})
         RETURN user
     `,
       )
@@ -23,14 +24,36 @@ export class AuthRepository {
         user: { identity, properties },
       } = query[0];
 
-      return {
+      const response = {
         id: identity,
         ...properties,
       };
+
+      // delete response.password;
+
+      return response;
     }
   }
 
-  async getUserByEmail(email: string): Promise<User> {
+  async verifyEmail(id: string) {
+    const query = await this.queryRepository
+      .initQuery()
+      .raw(
+        `
+      MATCH (user:User)
+      WHERE ID(user) = ${id}
+      SET user.isVerified = true
+      RETURN user.isVerified AS isVerified
+    `,
+      )
+      .run();
+
+    if (query?.length > 0) {
+      return 'Email successfully verified';
+    }
+  }
+
+  async getUserByEmail(email: string): Promise<UserInterface> {
     const query = await this.queryRepository
       .initQuery()
       .raw(

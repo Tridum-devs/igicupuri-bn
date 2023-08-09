@@ -15,8 +15,15 @@ export class UserInput {
     password: string;
 }
 
+export class LoginInput {
+    email: string;
+    password: string;
+}
+
 export abstract class IQuery {
     abstract welcomeMessage(): Nullable<string> | Promise<Nullable<string>>;
+
+    abstract verifyEmail(token: string): string | Promise<string>;
 }
 
 export class User {
@@ -24,11 +31,18 @@ export class User {
     firstName: string;
     lastName: string;
     email: string;
-    password: string;
+    isVerified: boolean;
+}
+
+export class LoginResponse {
+    message: string;
+    token: string;
 }
 
 export abstract class IMutation {
     abstract createUser(userInput: UserInput): User | Promise<User>;
+
+    abstract loginUser(loginInput: LoginInput): LoginResponse | Promise<LoginResponse>;
 }
 
 type Nullable<T> = T | null;
