@@ -1,7 +1,13 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { PasswordHelper } from 'src/helpers/password.helper';
 import { MailerHelper } from 'src/helpers/mailer.helper';
-import { LoginInput, LoginResponse, User, UserInput } from 'src/schema/graphql';
+import {
+  LoginInput,
+  LoginResponse,
+  User,
+  UserInput,
+  UserResponse,
+} from 'src/schema/graphql';
 import { AuthRepository } from './auth.repository';
 import { AuthHelper } from 'src/helpers/auth.helper';
 
@@ -14,7 +20,7 @@ export class AuthService {
     private readonly authRepository: AuthRepository,
   ) {}
 
-  async saveUser(userInput: UserInput): Promise<User> {
+  async saveUser(userInput: UserInput): Promise<UserResponse> {
     const { firstName, lastName, email, password } = userInput;
     const user = await this.authRepository.getUserByEmail(email);
     const hash = await this.passwordHelper.hashPassword(password);

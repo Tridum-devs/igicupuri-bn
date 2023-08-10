@@ -3,6 +3,7 @@ type User {
   firstName: String!
   lastName: String!
   email: String!
+  password: String!
   isVerified: Boolean!
 }
 
@@ -21,6 +22,14 @@ input LoginInput {
 type LoginResponse {
   message: String!
   token: String!
+}
+
+type UserResponse {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  email: String!
+  isVerified: Boolean!
 }
 
 type Query {

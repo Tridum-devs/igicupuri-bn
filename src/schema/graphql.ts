@@ -31,12 +31,21 @@ export class User {
     firstName: string;
     lastName: string;
     email: string;
+    password: string;
     isVerified: boolean;
 }
 
 export class LoginResponse {
     message: string;
     token: string;
+}
+
+export class UserResponse {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    isVerified: boolean;
 }
 
 export abstract class IMutation {
