@@ -4,7 +4,6 @@ import { MailerHelper } from 'src/helpers/mailer.helper';
 import {
   LoginInput,
   LoginResponse,
-  User,
   UserInput,
   UserResponse,
 } from 'src/schema/graphql';
@@ -36,11 +35,9 @@ export class AuthService {
       ...userInput,
       password: hash,
     };
-    const createdUser = await this.authRepository.saveUser(userInfo);
 
     const token = await this.authHelper.generateJwtToken({
-      id: createdUser?.id,
-      email: createdUser?.email,
+      email: email,
     });
 
     const subject = 'Igicupuri account creation was successful';
@@ -55,10 +52,10 @@ export class AuthService {
           max-width: 320px;
         "
       >
-        <h1 style="color: rgb(141, 63, 156)">Email Verification</h1>
+      <h1 style="color: rgb(141, 63, 156)">Email Verification</h1>
         <p>Dear ${firstName} ${lastName},</p>
         <p>
-          Thank you for registering with our service. To complete your
+        Thank you for registering with our service. To complete your
           registration, please click the link below to verify your email address:
         </p>
         <p>
@@ -72,22 +69,29 @@ export class AuthService {
                 color: rgb(0, 0, 0);
                 border-radius: 5px;
                 cursor: pointer;
-              "
-            >
-              Verify Email
-            </button></a
-          >
-        </p>
+                "
+                >
+                Verify Email
+                </button></a
+                >
+                </p>
         <br />
         <p>If you didn't register on our platform, please ignore this email.</p>
         <p>Best regards.</p>
         <h4>Igicupuri DevOps</h4>
-      </div>
-      `;
+        </div>
+        `;
 
-    await this.mailerHelper.sendEmail(email, subject, text);
+    try {
+      await this.mailerHelper.sendEmail(email, subject, text);
+    } catch (error) {
+      throw new HttpException(
+        'Email delivery has failed, please check again your email address or try again later',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
-    return createdUser;
+    return await this.authRepository.saveUser(userInfo);
   }
 
   async verifyEmail(token: string): Promise<string> {

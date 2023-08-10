@@ -49,7 +49,7 @@ export class UserResponse {
 }
 
 export abstract class IMutation {
-    abstract createUser(userInput: UserInput): User | Promise<User>;
+    abstract createUser(userInput: UserInput): UserResponse | Promise<UserResponse>;
 
     abstract loginUser(loginInput: LoginInput): LoginResponse | Promise<LoginResponse>;
 }

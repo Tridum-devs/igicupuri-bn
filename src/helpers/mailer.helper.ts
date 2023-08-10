@@ -1,5 +1,5 @@
 import { AuthenticationError } from '@nestjs/apollo';
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
 
@@ -40,15 +40,14 @@ export class MailerHelper {
       html: text,
     };
 
-    await this.transporter.sendMail(
-      mailOptions,
-      (error: any, info: any): any => {
+    return new Promise((res, rej) => {
+      this.transporter.sendMail(mailOptions, (error: any, info: any): any => {
         if (error) {
-          throw new AuthenticationError(error);
+          rej(error);
         } else {
-          return info;
+          res(info);
         }
-      },
-    );
+      });
+    });
   }
 }
