@@ -96,7 +96,7 @@ export class AuthService {
 
   async verifyEmail(token: string): Promise<string> {
     const user = await this.authHelper.verifyJwtToken(token);
-    return await this.authRepository.verifyEmail(user?.id);
+    return await this.authRepository.verifyEmail(user?.email);
   }
 
   async loginUser(loginInput: LoginInput): Promise<LoginResponse> {

@@ -32,13 +32,12 @@ export class AuthRepository {
     }
   }
 
-  async verifyEmail(id: string) {
+  async verifyEmail(email: string): Promise<string> {
     const query = await this.queryRepository
       .initQuery()
       .raw(
         `
-      MATCH (user:User)
-      WHERE ID(user) = ${id}
+      MATCH (user {email: "${email}"})
       SET user.isVerified = true
       RETURN user.isVerified AS isVerified
     `,
